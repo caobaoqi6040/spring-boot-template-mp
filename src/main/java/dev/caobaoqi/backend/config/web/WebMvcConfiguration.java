@@ -1,11 +1,18 @@
 package dev.caobaoqi.backend.config.web;
 
+import dev.caobaoqi.backend.filter.SampleFilter;
+import dev.caobaoqi.backend.interceptor.SampleInterceptor;
+import dev.caobaoqi.backend.listener.SampleListener;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
@@ -57,6 +64,27 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 			.setCachePeriod(60)
 			.resourceChain(true)
 			.addResolver(new EncodedResourceResolver());
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new SampleInterceptor()).addPathPatterns("/**").order(Ordered.HIGHEST_PRECEDENCE + 10);
+	}
+
+
+	@Bean
+	public FilterRegistrationBean<SampleFilter> sampleFilterRegistrationBean() {
+		var bean = new FilterRegistrationBean<SampleFilter>();
+		bean.setFilter(new SampleFilter());
+		bean.setUrlPatterns(Set.of("/*"));
+		return bean;
+	}
+
+	@Bean
+	public ServletListenerRegistrationBean<SampleListener> sampleListenerRegistrationBean() {
+		var bean = new ServletListenerRegistrationBean<SampleListener>();
+		bean.setListener(new SampleListener());
+		return bean;
 	}
 
 }
