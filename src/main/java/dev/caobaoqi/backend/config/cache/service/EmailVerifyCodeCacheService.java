@@ -9,23 +9,24 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class RedisCacheService {
+public class EmailVerifyCodeCacheService {
 
-	@Cacheable(value = CacheConfiguration.REDIS_VERIFY_CODE, key = "{#identify}", unless = "#result == null")
+	@Cacheable(value = CacheConfiguration.EMAIL_VERIFY_CODE, key = "{#identify}", unless = "#result == null")
 	public String getVerifyCodeBy(String identify) {
 		return null;
 	}
 
-	@CachePut(value = CacheConfiguration.REDIS_VERIFY_CODE, key = "{#identify}")
+	@CachePut(value = CacheConfiguration.EMAIL_VERIFY_CODE, key = "{#identify}")
 	public String upsertVerifyCodeBy(String identify, String value) {
 		return value;
 	}
 
-	@CacheEvict(value = CacheConfiguration.REDIS_VERIFY_CODE, key = "{#identify}")
+	@CacheEvict(value = CacheConfiguration.EMAIL_VERIFY_CODE, key = "{#identify}")
 	public void removeVerifyCodeBy(String identify) {
 	}
 
-	@CacheEvict(value = CacheConfiguration.REDIS_VERIFY_CODE, allEntries = true)
+	@CacheEvict(value = CacheConfiguration.EMAIL_VERIFY_CODE, allEntries = true)
 	public void clearAllVerifyCode() {
 	}
+
 }

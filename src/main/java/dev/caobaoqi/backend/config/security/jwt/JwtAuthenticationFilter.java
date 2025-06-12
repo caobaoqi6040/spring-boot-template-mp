@@ -34,6 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		DecodedJWT decodedJWT = jwt.resolve(token);
 		if (StringUtils.isNotEmpty(token) && ObjectUtils.allNotNull(decodedJWT)) {
 			try {
+				if (jwt.isDeleted(decodedJWT.getId())) {
+					log.warn("token deleted(black list)");
+					filterChain.doFilter(request, response);
+					return;
+				}
 				UserDetails userDetails = jwt.toUser(decodedJWT);
 				JwtAuthenticationToken authenticated = JwtAuthenticationToken.authenticated(userDetails, token, userDetails.getAuthorities());
 				authenticated.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

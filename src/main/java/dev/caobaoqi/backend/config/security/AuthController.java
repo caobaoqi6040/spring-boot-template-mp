@@ -2,6 +2,7 @@ package dev.caobaoqi.backend.config.security;
 
 import dev.caobaoqi.backend.config.security.jwt.Jwt;
 import dev.caobaoqi.backend.user.domain.request.UserLoginRequestVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,15 @@ public class AuthController {
 		));
 		String token = jwt.create((UserDetails) authenticate.getPrincipal(), vo.email());
 		return ResponseEntity.ok(token);
+	}
+
+	@GetMapping("/sign-out")
+	public ResponseEntity<Void> signOut(HttpServletRequest request) {
+		boolean deleted = jwt.invalidate(jwt.extract(request));
+		if (deleted) {
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)

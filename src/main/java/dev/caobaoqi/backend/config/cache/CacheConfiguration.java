@@ -17,17 +17,24 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CacheConfiguration {
 
-	public static final String REDIS_VERIFY_CODE = "verify::code";
+	public static final String EMAIL_VERIFY_CODE = "verify::code";
 	public static final String REDIS_LOCK_TIME = "lock::time";
+	public static final String JWT_TOKEN = "jwt::token";
 
 	@Bean
 	public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
 		Map<String, RedisCacheConfiguration> redisCacheConfigurations = new HashMap<>();
 		// config verify code
 		redisCacheConfigurations.put(
-			REDIS_VERIFY_CODE,
+			EMAIL_VERIFY_CODE,
 			RedisCacheConfiguration.defaultCacheConfig()
 				.entryTtl(Duration.ofMinutes(1))
+				.disableCachingNullValues());
+		// config jwt token
+		redisCacheConfigurations.put(
+			JWT_TOKEN,
+			RedisCacheConfiguration.defaultCacheConfig()
+				.entryTtl(Duration.ofHours(24))
 				.disableCachingNullValues());
 		// config lock time
 		redisCacheConfigurations.put(
