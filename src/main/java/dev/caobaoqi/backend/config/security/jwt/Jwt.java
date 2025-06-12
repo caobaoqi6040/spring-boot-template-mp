@@ -45,12 +45,6 @@ public class Jwt {
 		this.expire = expire;
 	}
 
-	public Date expireTime() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, expire);
-		return calendar.getTime();
-	}
-
 	public String create(UserDetails user, String email) {
 		return JWT.create()
 			.withJWTId(UUID.randomUUID().toString())
@@ -63,7 +57,7 @@ public class Jwt {
 			.withExpiresAt(
 				Date.from(
 					LocalDateTime.now()
-						.plusMinutes(expire)
+						.plusHours(expire)
 						.atZone(ZoneId.systemDefault())
 						.toInstant()))
 			.sign(Algorithm.HMAC256(secret));
